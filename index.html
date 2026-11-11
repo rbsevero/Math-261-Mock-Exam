@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Math 261: Survival and Loss Models – Mock Exam Lab</title>
+<script>window.MathJax={tex:{inlineMath:[['$','$']]},svg:{fontCache:'global'}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+.nw{white-space:nowrap}.mj p{margin:0 0 .6rem;line-height:1.75}.mj mjx-container{display:inline-block!important;margin:0!important}
+@media print{header,.noprint{display:none!important}}</style></head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"><div id="root"></div>
+<script>
+const h=React.createElement,{useState,useEffect,useRef,useMemo}=React,r=String.raw;
+const TITLE="Math 261: Survival and Loss Models";
+const MODS=[["Basic Probability",["Functions and Moments","Percentiles","Conditional Probability and Expectation","Moment and Probability Generating Functions","The Empirical Distribution"]],
+["Parametric Distributions",["Scaling and Transformations","Common Parametric Distributions","The Linear Exponential Family","Limiting Distributions"]],
+["Variance & Approximations",["Additivity","Normal Approximation","Bernoulli Shortcut"]],
+["Mixtures, Splices & Frailty Models",["Discrete and Continuous Mixtures","Frailty Models","Conditional Variance","Splices"]],
+["Severity Coverage Modifications",["Policy Limits","Deductibles","Loss Elimination Ratio (LER)","Other Coverage Modifications & Bonuses"]],
+["Risk Measures and Tail Weight",["Coherent Risk Measures","Value-at-Risk (VaR)","Tail-Value-at-Risk (TVaR)","Tail Weight","Extreme Value Distributions"]],
+["Frequency Distributions",["The (a, b, 0) Class","The (a, b, 1) Class","Poisson/Gamma Models","Exposure & Coverage Modifications"]],
+["Aggregate Loss Models",["Compound Variance","Approximating Distributions","Severity Modifications","The Recursive Formula","Aggregate Deductibles","Miscellaneous Topics"]]];
+const LN=l=>{const[m,k]=l.split('.');return l+' '+MODS[m-1][1][k-1]};
+let _n=0;const Q=(l,q,c,a,s)=>({id:'s'+(++_n),m:+l.split('.')[0],l,q,c,a,s});
+const SEED=[
+Q("1.1",r`The density of $X$ is $f(x)=\frac{3x^2}{1000}$ for $0<x<10$. Calculate $E[X]$.`,["5.00","6.67","7.00","7.50"],3,r`$E[X]=\int_0^{10}x\cdot\frac{3x^2}{1000}\,dx=\frac{3}{1000}\cdot\frac{10^4}{4}=7.5$.`),
+Q("1.2",r`Loss $X$ has CDF $F(x)=1-\left(\frac{100}{100+x}\right)^2$ for $x>0$. Calculate the 70th percentile.`,["54.8","70.0","82.6","100.0"],2,r`Set $F(x)=0.7$, so $\left(\frac{100}{100+x}\right)^2=0.3$.
+Then $100+x=100/\sqrt{0.3}=182.57$, so $x=82.6$.`),
+Q("2.2",r`$X$ follows a Pareto distribution with $\alpha=3$ and $\theta=2000$. Calculate $\operatorname{Var}(X)$.`,[r`$1\times10^6$`,r`$3\times10^6$`,r`$4\times10^6$`,r`$6\times10^6$`],1,r`$E[X]=\frac{\theta}{\alpha-1}=1000$ and $E[X^2]=\frac{2\theta^2}{(\alpha-1)(\alpha-2)}=4\times10^6$.
+So $\operatorname{Var}(X)=4\times10^6-10^6=3\times10^6$.`),
+Q("2.1",r`Losses $X$ are exponential with mean 500. Inflation of 5% turns each loss into $Y=1.05X$. Calculate $P(Y>600)$.`,["0.2837","0.3012","0.3189","0.3500"],2,r`$Y$ is exponential with $\theta=1.05(500)=525$ (scale family).
+$P(Y>600)=e^{-600/525}=e^{-1.1429}=0.3189$.`),
+Q("3.2",r`A portfolio has 100 independent policies, each with mean loss 50 and standard deviation 20. Use the normal approximation to estimate $P(S>5300)$ for the total $S$.`,["0.0013","0.0228","0.0668","0.1587"],2,r`$E[S]=5000$, $\operatorname{Var}(S)=100(400)=40000$, so $\sigma_S=200$.
+$z=\frac{5300-5000}{200}=1.5$, so $P=1-\Phi(1.5)=0.0668$.`),
+Q("3.3",r`A loss equals 1000 with probability 0.2 and 400 with probability 0.8. Calculate its variance.`,["28,800","57,600","90,000","360,000"],1,r`Bernoulli shortcut: $\operatorname{Var}=(a-b)^2pq=600^2(0.2)(0.8)=57{,}600$.`),
+Q("4.1",r`With probability 0.6, $X$ is exponential with mean 100; with probability 0.4, it is exponential with mean 500. Calculate $\operatorname{Var}(X)$.`,["100,000","125,800","144,400","212,000"],2,r`$E[X]=0.6(100)+0.4(500)=260$.
+$E[X^2]=0.6(2)(100^2)+0.4(2)(500^2)=212{,}000$.
+$\operatorname{Var}=212{,}000-260^2=144{,}400$.`),
+Q("4.3",r`Given $\Theta$, $X$ has mean $\Theta$ and variance $2\Theta$. $\Theta$ has mean 10 and variance 3. Calculate $\operatorname{Var}(X)$.`,["13","20","23","26"],2,r`$\operatorname{Var}(X)=E[\operatorname{Var}(X|\Theta)]+\operatorname{Var}(E[X|\Theta])=E[2\Theta]+\operatorname{Var}(\Theta)=20+3=23$.`),
+Q("5.1",r`$X$ is exponential with mean 1000. Calculate $E[X\wedge500]$.`,["367.9","393.5","500.0","606.5"],1,r`$E[X\wedge u]=\theta(1-e^{-u/\theta})=1000(1-e^{-0.5})=393.5$.`),
+Q("5.2",r`Losses are exponential with mean 1000. A policy has an ordinary deductible of 500. Calculate the expected payment per loss.`,["393.5","500.0","606.5","1,000.0"],2,r`$E[(X-d)_+]=E[X]-E[X\wedge d]=1000-393.5=606.5$.
+This equals $\theta e^{-d/\theta}=1000e^{-0.5}$.`),
+Q("5.3",r`Losses are Pareto with $\alpha=3$ and $\theta=2000$. Find the loss elimination ratio for an ordinary deductible of 1000.`,["0.3333","0.4444","0.5556","0.6667"],2,r`$E[X\wedge1000]=\frac{\theta}{\alpha-1}\left[1-\left(\frac{\theta}{\theta+d}\right)^{\alpha-1}\right]=1000\left(1-\frac49\right)=555.6$.
+$\text{LER}=555.6/1000=0.5556$.`),
+Q("6.2",r`Losses are exponential with mean 1000. Calculate $\text{VaR}_{0.95}$.`,["1,609","2,303","2,996","3,912"],2,r`$\text{VaR}_{0.95}=-\theta\ln(0.05)=1000\ln20=2996$.`),
+Q("6.3",r`Losses are exponential with mean 1000. Calculate $\text{TVaR}_{0.95}$.`,["2,996","3,303","3,996","4,605"],2,r`By memorylessness, $\text{TVaR}_p=\text{VaR}_p+\theta=2996+1000=3996$.`),
+Q("7.1",r`$N$ is negative binomial with $r=2$ and $\beta=1$. Calculate $P(N=2)$.`,["0.1250","0.1500","0.1875","0.2500"],2,r`$a=\frac{\beta}{1+\beta}=0.5$, $b=(r-1)a=0.5$, $p_0=(1+\beta)^{-r}=0.25$.
+$p_1=p_0(a+b)=0.25$ and $p_2=p_1(a+b/2)=0.25(0.75)=0.1875$.`),
+Q("7.2",r`$N^T$ is a zero-truncated Poisson with $\lambda=1$. Calculate $P(N^T=1)$.`,["0.3679","0.5820","0.6321","0.7358"],1,r`$p_1^T=\frac{p_1}{1-p_0}=\frac{e^{-1}}{1-e^{-1}}=\frac{0.3679}{0.6321}=0.5820$.`),
+Q("8.1",r`Claim count $N$ is Poisson with mean 3. Severity has mean 100 and variance 5000. Calculate $\operatorname{Var}(S)$.`,["15,000","30,000","45,000","90,000"],2,r`For compound Poisson, $\operatorname{Var}(S)=\lambda E[X^2]=3(5000+100^2)=45{,}000$.`),
+Q("8.4",r`$N$ is Poisson with $\lambda=1$. Severity is 1 or 2 with probability 0.5 each. Using the recursive formula, calculate $g_2=P(S=2)$.`,["0.1380","0.1839","0.2299","0.3679"],2,r`$g_0=e^{-1}=0.3679$, and $g_k=\frac{\lambda}{k}\sum_j jf_jg_{k-j}$.
+$g_1=0.5g_0=0.1839$.
+$g_2=\frac12[1(0.5)g_1+2(0.5)g_0]=\frac12(0.0920+0.3679)=0.2299$.`),
+Q("8.5",r`$S$ equals 0, 100 or 200 with probabilities 0.5, 0.3, 0.2. Calculate $E[(S-150)_+]$.`,["5","10","15","20"],1,r`Only $S=200$ exceeds 150, so $E[(S-150)_+]=0.2(50)=10$.`)];
+
+const mem={},ST={get(k,d){try{const v=localStorage.getItem('m261:'+k);return v?JSON.parse(v):d}catch(e){return k in mem?mem[k]:d}},set(k,v){mem[k]=v;try{localStorage.setItem('m261:'+k,JSON.stringify(v))}catch(e){}}};
+const usePersist=(k,d)=>{const[v,s]=useState(()=>ST.get(k,d));useEffect(()=>ST.set(k,v),[v]);return[v,s]};
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function sample(pool,n,sp){n=Math.min(n,pool.length);if(!sp)return shuf(pool).slice(0,n);
+ const g={};pool.forEach(q=>(g[q.m]=g[q.m]||[]).push(q));const ks=Object.keys(g);ks.forEach(k=>g[k]=shuf(g[k]));const out=[];
+ if(sp==='uniform'){const o=shuf(ks);while(out.length<n){for(const k of o)if(out.length<n&&g[k].length)out.push(g[k].pop())}}
+ else{const qt={},rm=[];let t=0;ks.forEach(k=>{const x=n*g[k].length/pool.length;qt[k]=Math.floor(x);t+=qt[k];rm.push([x-qt[k],k])});rm.sort((a,b)=>b[0]-a[0]);
+  for(let i=0;t<n;i=(i+1)%rm.length){const k=rm[i][1];if(qt[k]<g[k].length){qt[k]++;t++}}ks.forEach(k=>out.push(...g[k].splice(0,qt[k])))}
+ return shuf(out)}
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt=t=>t.split('\n').map(p=>'<p>'+esc(p).replace(/(\$[^$]+\$)([.,;:)!?]+)/g,'<span class="nw">$1$2</span>')+'</p>').join('');
+function T({t,c}){const ref=useRef();useEffect(()=>{const M=window.MathJax;M&&M.typesetPromise&&M.typesetPromise([ref.current]).catch(()=>{})},[t]);
+ return h('div',{ref,className:'mj '+(c||''),dangerouslySetInnerHTML:{__html:fmt(t)}})}
+const mmss=s=>{s=Math.max(0,Math.round(s));return(s/60|0)+':'+String(s%60).padStart(2,'0')};
+const card='rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm';
+const btn=(on)=>'px-3 py-1.5 rounded-lg text-sm font-medium border '+(on?'bg-sky-600 border-sky-600 text-white':'border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800');
+const prim='px-5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold disabled:opacity-40';
+
+function Home({bank,missed,marks,go}){
+ const[mode,setMode]=useState('practice'),[count,setCount]=useState(10),[sp,setSp]=useState('uniform'),[src,setSrc]=useState('bank'),[mins,setMins]=useState(3);
+ const[sel,setSel]=useState(()=>{const o={};MODS.forEach((m,i)=>m[1].forEach((_,k)=>o[(i+1)+'.'+(k+1)]=1));return o});
+ const pool=bank.filter(q=>sel[q.l]&&(src==='bank'||(src==='missed'?missed[q.id]:marks[q.id])));
+ const cnt=l=>bank.filter(q=>q.l===l).length;
+ const togM=i=>{const ls=MODS[i][1].map((_,k)=>(i+1)+'.'+(k+1)),all=ls.every(l=>sel[l]);const o={...sel};ls.forEach(l=>all?delete o[l]:o[l]=1);setSel(o)};
+ const togL=l=>{const o={...sel};o[l]?delete o[l]:o[l]=1;setSel(o)};
+ return h('div',{className:'space-y-4'},
+  h('div',{className:card},h('h2',{className:'font-bold mb-2'},'1. Mode'),h('div',{className:'flex flex-wrap gap-2'},
+   [['practice','Practice (instant feedback)'],['exam','Exam (timed, graded at end)']].map(([k,l])=>h('button',{key:k,className:btn(mode===k),onClick:()=>setMode(k)},l)),
+   [['bank','Full bank'],['missed','Missed vault ('+Object.keys(missed).length+')'],['marks','Bookmarked ('+Object.keys(marks).length+')']].map(([k,l])=>h('button',{key:k,className:btn(src===k),onClick:()=>setSrc(k)},l)))),
+  h('div',{className:card},h('h2',{className:'font-bold mb-2'},'2. Length & spread'),h('div',{className:'flex flex-wrap items-center gap-2'},
+   [5,10,15,30].map(n=>h('button',{key:n,className:btn(count===n),onClick:()=>setCount(n)},n+' Qs')),
+   h('input',{type:'number',min:1,value:count,onChange:e=>setCount(Math.max(1,+e.target.value||1)),className:'w-20 px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent'}),
+   mode==='exam'&&h('label',{className:'text-sm ml-2'},'Minutes/question ',h('input',{type:'number',min:1,value:mins,onChange:e=>setMins(Math.max(1,+e.target.value||1)),className:'w-16 px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent'}))),
+   h('div',{className:'flex flex-wrap items-center gap-2 mt-3'},h('span',{className:'text-sm'},'Sample across all selected topics:'),
+    [['uniform','Uniform'],['prop','Proportional'],['off','Off (pure random)']].map(([k,l])=>h('button',{key:k,className:btn(sp===k),onClick:()=>setSp(k)},l)))),
+  h('div',{className:card},h('div',{className:'flex justify-between mb-2'},h('h2',{className:'font-bold'},'3. Modules & sub-topics'),
+   h('div',{className:'space-x-2'},h('button',{className:btn(0),onClick:()=>{const o={};MODS.forEach((m,i)=>m[1].forEach((_,k)=>o[(i+1)+'.'+(k+1)]=1));setSel(o)}},'All'),h('button',{className:btn(0),onClick:()=>setSel({})},'None'))),
+   MODS.map((m,i)=>h('div',{key:i,className:'mb-3'},h('button',{className:'font-semibold text-sm text-sky-600 dark:text-sky-400 mb-1',onClick:()=>togM(i)},(i+1)+'. '+m[0]),
+    h('div',{className:'flex flex-wrap gap-1.5'},m[1].map((n,k)=>{const l=(i+1)+'.'+(k+1);return h('button',{key:l,className:btn(sel[l]),onClick:()=>togL(l)},l+' '+n+' ('+cnt(l)+')')}))))),
+  h('div',{className:'flex items-center gap-3'},h('button',{className:prim,disabled:!pool.length,onClick:()=>go({mode,mins,src,qs:sample(pool,count,sp==='off'?0:sp)})},'Start '+(mode==='exam'?'exam':'practice')),
+   h('span',{className:'text-sm text-slate-500'},pool.length+' questions available'+(pool.length<count?' (session will use all)':''))))}
+
+function Run({ses,setSes,fin,marks,setMarks}){
+ const[,tick]=useState(0),[cf,setCf]=useState(false),last=useRef(Date.now()),ended=useRef(false);
+ useEffect(()=>{const i=setInterval(()=>tick(x=>x+1),1000);return()=>clearInterval(i)},[]);
+ const{qs,idx,ans,flag,chk,mode}=ses,q=qs[idx],show=mode==='practice'&&chk[idx];
+ const rem=ses.limit?ses.limit-(Date.now()-ses.start)/1000:0;
+ const done=()=>{if(ended.current)return;ended.current=true;const t=[...ses.t];t[idx]=(t[idx]||0)+(Date.now()-last.current)/1000;fin({...ses,t})};
+ useEffect(()=>{if(ses.limit&&rem<=0)done()});
+ const go=i=>{const t=[...ses.t];t[idx]=(t[idx]||0)+(Date.now()-last.current)/1000;last.current=Date.now();setSes({...ses,t,idx:i});setCf(false)};
+ const pick=j=>{if(show)return;setSes({...ses,ans:{...ans,[idx]:j},chk:{...chk,[idx]:1}})};
+ const na=Object.keys(ans).length,L='ABCDE';
+ const cs=j=>{const b='w-full text-left p-3 rounded-lg border flex gap-3 items-start ';
+  if(show)return b+(j===q.a?'border-emerald-500 bg-emerald-500/10':j===ans[idx]?'border-rose-500 bg-rose-500/10':'border-slate-300 dark:border-slate-700 opacity-60');
+  return b+(ans[idx]===j?'border-sky-500 bg-sky-500/10':'border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800')};
+ const nv=i=>{let c='w-9 h-9 rounded-lg text-sm font-semibold border ';
+  if(flag[i])c+='bg-amber-400/30 border-amber-500 ';else if(ans[i]!==undefined)c+=mode==='practice'?(ans[i]===qs[i].a?'bg-emerald-500/20 border-emerald-500 ':'bg-rose-500/20 border-rose-500 '):'bg-sky-500/20 border-sky-500 ';else c+='border-slate-300 dark:border-slate-700 ';
+  return c+(i===idx?'ring-2 ring-sky-500':'')};
+ return h('div',{className:'grid md:grid-cols-[1fr_220px] gap-4'},
+  h('div',{className:'space-y-3'},
+   h('div',{className:card},h('div',{className:'flex justify-between text-sm mb-2'},h('span',null,'Question '+(idx+1)+' of '+qs.length+' · '+na+' answered'),
+     mode==='exam'&&h('span',{className:'font-mono font-bold '+(rem<60?'text-rose-500':'')},'⏱ '+mmss(rem))),
+    h('div',{className:'h-2 rounded bg-slate-200 dark:bg-slate-800'},h('div',{className:'h-2 rounded bg-sky-500',style:{width:na/qs.length*100+'%'}}))),
+   h('div',{className:card},h('div',{className:'flex justify-between mb-2 text-xs text-slate-500'},h('span',null,LN(q.l)),
+     h('span',{className:'space-x-2'},h('button',{className:btn(flag[idx]),onClick:()=>setSes({...ses,flag:{...flag,[idx]:!flag[idx]}})},'⚑ Flag'),
+      h('button',{className:btn(marks[q.id]),onClick:()=>setMarks(m=>{const o={...m};o[q.id]?delete o[q.id]:o[q.id]=1;return o})},'★ Bookmark'))),
+    h(T,{t:q.q,c:'text-lg mb-3'}),
+    h('div',{className:'space-y-2'},q.c.map((c,j)=>h('button',{key:j,className:cs(j),onClick:()=>pick(j)},h('b',null,L[j]+'.'),h(T,{t:c})))),
+    show&&h('div',{className:'mt-4 p-3 rounded-lg bg-slate-100 dark:bg-slate-800'},h('p',{className:'font-bold mb-1 '+(ans[idx]===q.a?'text-emerald-500':'text-rose-500')},ans[idx]===q.a?'Correct':'Incorrect – answer: '+L[q.a]),h(T,{t:q.s}))),
+   h('div',{className:'flex justify-between'},h('button',{className:btn(0),disabled:!idx,onClick:()=>go(idx-1)},'← Prev'),
+    idx<qs.length-1?h('button',{className:btn(0),onClick:()=>go(idx+1)},'Next →'):
+    h('button',{className:prim,onClick:()=>cf?done():setCf(true)},cf?'Confirm submit ('+(qs.length-na)+' unanswered)':'Finish & grade'))),
+  h('div',{className:card+' self-start'},h('p',{className:'text-sm font-semibold mb-2'},'Navigator'),
+   h('div',{className:'grid grid-cols-5 gap-1.5'},qs.map((_,i)=>h('button',{key:i,className:nv(i),onClick:()=>go(i)},i+1))),
+   h('p',{className:'text-xs mt-3 text-slate-500'},'Amber = flagged · colored = answered · plain = unanswered'),
+   h('button',{className:'mt-3 w-full '+btn(0),onClick:done},'End session now')))}
+
+function Result({a,byId}){
+ const[open,setOpen]=useState(false),L='ABCDE';
+ return h('div',{className:'space-y-3'},h('div',{className:card},h('h2',{className:'text-xl font-bold'},TITLE),
+  h('p',{className:'text-3xl font-bold my-1'},a.score+' / '+a.total+' ('+Math.round(a.score/a.total*100)+'%)'),
+  h('p',{className:'text-sm text-slate-500'},new Date(a.ts).toLocaleString()+' · '+a.mode+' mode · '+mmss(a.secs)+' total'),
+  h('div',{className:'noprint mt-3 space-x-2'},h('button',{className:btn(0),onClick:()=>setOpen(!open)},open?'Hide all solutions':'Show all solutions'),h('button',{className:btn(0),onClick:()=>window.print()},'Print / save summary'))),
+  a.items.map((it,i)=>{const q=byId[it.id];if(!q)return null;return h('div',{key:i,className:card+' border-l-4 '+(it.ok?'border-l-emerald-500':'border-l-rose-500')},
+   h('div',{className:'text-xs text-slate-500 mb-1'},'Q'+(i+1)+' · '+LN(q.l)+' · '+it.t+'s'),h(T,{t:q.q}),
+   h('p',{className:'text-sm mt-1'},'Your answer: ',h('b',null,it.sel==null?'—':L[it.sel]),'  Correct: ',h('b',null,L[q.a])),
+   open&&h('div',{className:'mt-2 p-3 rounded-lg bg-slate-100 dark:bg-slate-800'},h(T,{t:q.s})))}))}
+
+function Hub({hist,setHist,missed,setMissed,marks,bank,byId,view,go,startQs}){
+ const avg=hist.length?Math.round(hist.reduce((s,a)=>s+a.score/a.total,0)/hist.length*100):0;
+ const mq=bank.filter(q=>missed[q.id]),bq=bank.filter(q=>marks[q.id]);
+ return h('div',{className:'space-y-4'},h('div',{className:card},h('h2',{className:'font-bold mb-1'},'Review Hub'),
+  h('p',{className:'text-sm text-slate-500'},hist.length+' attempts · average '+avg+'% · '+mq.length+' missed · '+bq.length+' bookmarked'),
+  h('div',{className:'mt-3 space-x-2'},h('button',{className:prim,disabled:!mq.length,onClick:()=>startQs(mq,'missed')},'Practice missed'),
+   h('button',{className:prim,disabled:!bq.length,onClick:()=>startQs(bq,'marks')},'Practice bookmarked'),
+   h('button',{className:btn(0),onClick:()=>{if(hist.length||mq.length){setHist([]);setMissed({})}}},'Clear history'))),
+  h('div',{className:card},h('h3',{className:'font-semibold mb-2'},'Missed Question Vault'),mq.length?mq.map(q=>h('div',{key:q.id,className:'flex justify-between gap-2 py-1 border-b border-slate-200 dark:border-slate-800 text-sm'},
+   h('span',null,LN(q.l)+' (missed '+missed[q.id]+'×)'),h('button',{className:'text-rose-500',onClick:()=>setMissed(m=>{const o={...m};delete o[q.id];return o})},'remove'))):h('p',{className:'text-sm text-slate-500'},'Nothing missed yet.')),
+  h('div',{className:card},h('h3',{className:'font-semibold mb-2'},'Past attempts'),hist.length?hist.map((a,i)=>h('button',{key:i,onClick:()=>view(a),className:'w-full flex justify-between py-1.5 border-b border-slate-200 dark:border-slate-800 text-sm hover:bg-slate-100 dark:hover:bg-slate-800'},
+   h('span',null,new Date(a.ts).toLocaleString()+' · '+a.mode),h('span',null,a.score+'/'+a.total+' · '+mmss(a.secs)))):h('p',{className:'text-sm text-slate-500'},'No attempts yet.')))}
+
+function Imp({setExtra,n}){
+ const[txt,setTxt]=useState(''),[msg,setMsg]=useState('');
+ const add=()=>{try{const a=JSON.parse(txt);if(!Array.isArray(a))throw 0;const ok=a.filter(x=>x.q&&Array.isArray(x.c)&&Number.isInteger(x.a)&&x.s&&/^[1-8]\.\d+$/.test(x.l));
+  setExtra(e=>e.concat(ok.map((x,i)=>({id:'u'+Date.now()+i,m:+x.l.split('.')[0],l:x.l,q:x.q,c:x.c,a:x.a,s:x.s}))));setMsg('Added '+ok.length+' of '+a.length+' problems.');setTxt('')}catch(e){setMsg('Invalid JSON.')}};
+ return h('div',{className:card+' space-y-2'},h('h2',{className:'font-bold'},'Import problem batch ('+n+' imported so far)'),
+  h('p',{className:'text-sm text-slate-500'},'Paste a JSON array of objects: '+'{"l":"5.2","q":"text with $math$","c":["choice A","choice B"],"a":0,"s":"step-by-step solution"}. l = lesson number, a = index of the correct choice (0-based).'),
+  h('textarea',{value:txt,onChange:e=>setTxt(e.target.value),rows:8,className:'w-full p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent font-mono text-xs'}),
+  h('button',{className:prim,onClick:add},'Add to bank'),h('span',{className:'ml-3 text-sm'},msg))}
+
+function App(){
+ const[dark,setDark]=usePersist('dark',matchMedia('(prefers-color-scheme: dark)').matches),[hist,setHist]=usePersist('hist',[]),[missed,setMissed]=usePersist('missed',{}),[marks,setMarks]=usePersist('marks',{}),[extra,setExtra]=usePersist('extra',[]);
+ const[v,setV]=useState('home'),[ses,setSes]=useState(null),[res,setRes]=useState(null);
+ const bank=useMemo(()=>SEED.concat(extra),[extra]),byId=useMemo(()=>Object.fromEntries(bank.map(q=>[q.id,q])),[bank]);
+ useEffect(()=>{document.documentElement.classList.toggle('dark',dark)},[dark]);
+ const go=c=>{if(!c.qs.length)return;setSes({mode:c.mode,qs:c.qs,ans:{},flag:{},chk:{},t:[],idx:0,start:Date.now(),limit:c.mode==='exam'?c.qs.length*c.mins*60:0,src:c.src});setV('run')};
+ const fin=s=>{const items=s.qs.map((q,i)=>({id:q.id,sel:s.ans[i]===undefined?null:s.ans[i],ok:s.ans[i]===q.a,t:Math.round(s.t[i]||0)}));
+  const a={ts:Date.now(),mode:s.mode,src:s.src,score:items.filter(x=>x.ok).length,total:items.length,secs:Math.round((Date.now()-s.start)/1000),items};
+  setMissed(m=>{const o={...m};items.forEach(x=>{if(x.ok)delete o[x.id];else o[x.id]=(o[x.id]||0)+1});return o});setHist(x=>[a,...x].slice(0,100));setRes(a);setV('result')};
+ const nav=(k,l)=>h('button',{className:btn(v===k),onClick:()=>setV(k)},l);
+ return h('div',{className:'min-h-screen'},h('header',{className:'sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur'},
+  h('div',{className:'max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2'},
+   h('div',null,h('h1',{className:'text-lg font-bold leading-tight'},TITLE),h('p',{className:'text-xs text-slate-500'},'Mock Exam & Practice Lab')),
+   h('nav',{className:'flex gap-2'},nav('home','Setup'),nav('hub','Review Hub'),nav('imp','Import'),h('button',{className:btn(0),onClick:()=>setDark(!dark),title:'Toggle theme'},dark?'☀ Light':'☾ Dark')))),
+  h('main',{className:'max-w-5xl mx-auto p-4'},
+   v==='home'&&h(Home,{bank,missed,marks,go}),
+   v==='run'&&ses&&h(Run,{ses,setSes,fin,marks,setMarks}),
+   v==='result'&&res&&h(Result,{a:res,byId}),
+   v==='hub'&&h(Hub,{hist,setHist,missed,setMissed,marks,bank,byId,view:a=>{setRes(a);setV('result')},startQs:(qs,src)=>go({mode:'practice',mins:3,src,qs:shuf(qs).slice(0,15)})}),
+   v==='imp'&&h(Imp,{setExtra,n:extra.length})))}
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script></body></html>
